@@ -54,6 +54,13 @@
   }
   .lang-btn.active{background:var(--amber); color:#0E2138;}
   .lang-btn:not(.active):hover{color:#EAF0F6;}
+  .top-tools{display:flex; flex-direction:column; align-items:flex-end; gap:10px;}
+  .ver{font-family:var(--font-mono); font-size:11px; color:#8FA3B8; letter-spacing:.06em;}
+  .top-link{
+    font-family:var(--font-body); font-size:12.5px; font-weight:600; color:#EAF0F6; text-decoration:none;
+    border:1px solid var(--steel-line); border-radius:8px; padding:7px 14px; background:rgba(255,255,255,0.04);
+  }
+  .top-link:hover{border-color:var(--amber);}
 
   /* ---------- Cards ---------- */
   main{max-width:900px; margin:0 auto; padding:clamp(24px,5vw,48px) clamp(14px,4vw,32px) 60px;}
@@ -91,9 +98,13 @@
         <h1 class="title" data-i18n="title">EcoOils Mentari Health Record</h1>
       </div>
     </div>
-    <div class="lang-toggle" role="group" aria-label="Language">
-      <button type="button" class="lang-btn active" data-lang="en">EN</button>
-      <button type="button" class="lang-btn" data-lang="bi">BI</button>
+    <div class="top-tools">
+      <div class="lang-toggle" role="group" aria-label="Language">
+        <button type="button" class="lang-btn active" data-lang="en">EN</button>
+        <button type="button" class="lang-btn" data-lang="bi">BI</button>
+      </div>
+      <div class="ver" id="ver"></div>
+      <a class="top-link" href="admin.html" data-i18n="admin">Admin</a>
     </div>
   </div>
 </header>
@@ -133,8 +144,12 @@
   const BLOOD_PRESSURE_URL = "https://iggifernandes.github.io/EcoOils-Project-blood-pressure-monitoring/";
   const ALCOHOL_URL = "https://iggifernandes.github.io/EcoOils-Project-drug---alcohol-test-record/";
 
+  const APP_VERSION = "1.1.0";
+  document.getElementById('ver').textContent = "v" + APP_VERSION;
+
   const I18N = {
     en: {
+      admin: "Admin",
       eyebrow: "PT EcoOils Jaya Indonesia · HSSE",
       subtitle: "Mentari Project · Sei Mangkei",
       title: "EcoOils Mentari Health Record",
@@ -145,6 +160,7 @@
       alcDesc: "Log breathalyzer results and pass/fail outcomes, with monthly contractor breakdowns."
     },
     bi: {
+      admin: "Admin",
       eyebrow: "PT EcoOils Jaya Indonesia · HSSE",
       subtitle: "Proyek Mentari · Sei Mangkei",
       title: "Catatan Kesehatan EcoOils Mentari",

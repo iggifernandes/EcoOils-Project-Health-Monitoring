@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Admin · EcoOils Mentari Health Record</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0E2138; --navy-2:#152C48; --steel:#1C3A56; --steel-line:#2A4A6B; --amber:#FFB81C;
+    --paper:#F9F9F7; --surface:#FCFCFB; --ink:#0B0B0B; --ink-2:#52514E; --muted:#737169;
+    --grid:#E1E0D9; --axis:#C3C2B7; --hair:rgba(11,11,11,0.10); --field:#FFFFFF;
+    --s1:#2A78D6; --s2:#EB6834;
+    --good:#0CA30C; --warn:#FAB219; --crit:#D03B3B;
+    --font-display:'Oswald',sans-serif; --font-body:'Inter',system-ui,sans-serif; --font-mono:'JetBrains Mono',monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper:#0D0D0D; --surface:#1A1A19; --ink:#F0EFEC; --ink-2:#C3C2B7; --muted:#A09E96;
+      --grid:#2C2C2A; --axis:#383835; --hair:rgba(255,255,255,0.10); --field:#232321;
+      --s1:#3987E5; --s2:#D95926;
+    }
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--paper); color:var(--ink); font-family:var(--font-body); -webkit-font-smoothing:antialiased;}
+  [hidden]{display:none !important;}
+
+  /* Header */
+  header.top{background:linear-gradient(160deg,var(--navy) 0%,var(--navy-2) 65%,var(--steel) 100%); color:#EAF0F6; padding:24px clamp(14px,4vw,56px) 26px;}
+  @media (max-width:480px){ header.top{padding:18px 14px 20px;} }
+  .top-row{display:flex; justify-content:space-between; align-items:flex-start; gap:20px; flex-wrap:wrap;}
+  .brand-block{display:flex; flex-direction:column; align-items:flex-start; gap:10px;}
+  .logo-mark{height:54px; width:auto; display:block;}
+  @media (max-width:520px){ .logo-mark{height:40px;} }
+  .brand-eyebrow{font-family:var(--font-mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--amber); margin:0 0 8px;}
+  .brand-sub{color:#A9BBCC; font-size:13px; margin:0;}
+  h1.title{font-family:var(--font-display); font-weight:700; font-size:clamp(19px,2.6vw,26px); margin:6px 0 0; letter-spacing:.01em; line-height:1.15;}
+  .top-tools{display:flex; flex-direction:column; align-items:flex-end; gap:10px;}
+  .lang-toggle{display:flex; border:1px solid var(--steel-line); border-radius:9px; overflow:hidden; background:rgba(255,255,255,0.04);}
+  .lang-btn{font-family:var(--font-mono); font-size:12px; font-weight:700; letter-spacing:.04em; color:#8FA3B8; background:transparent; border:none; padding:8px 14px; cursor:pointer;}
+  .lang-btn.active{background:var(--amber); color:#0E2138;}
+  .lang-btn:not(.active):hover{color:#EAF0F6;}
+  .ver{font-family:var(--font-mono); font-size:11px; color:#8FA3B8; letter-spacing:.06em;}
+  .top-links{display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;}
+  .top-link{font-family:var(--font-body); font-size:12.5px; font-weight:600; color:#EAF0F6; text-decoration:none; border:1px solid var(--steel-line); border-radius:8px; padding:7px 12px; background:rgba(255,255,255,0.04); cursor:pointer;}
+  .top-link:hover{border-color:var(--amber);}
+
+  main{max-width:1180px; margin:0 auto; padding:22px clamp(12px,4vw,32px) 60px;}
+  .card{background:var(--surface); border:1px solid var(--hair); border-radius:14px; padding:18px clamp(14px,3vw,26px); margin-bottom:18px;}
+  .card h2{font-family:var(--font-display); font-size:17px; font-weight:600; margin:0 0 2px;}
+  .card .sub{color:var(--ink-2); font-size:13px; margin:0 0 14px;}
+  .section-title{font-family:var(--font-display); font-size:19px; font-weight:600; margin:26px 0 12px;}
+
+  /* Banner + gate */
+  .banner{border:1px solid var(--hair); border-left:4px solid var(--warn); background:var(--surface); border-radius:10px; padding:12px 16px; margin-bottom:18px; font-size:13.5px; line-height:1.5; color:var(--ink);}
+  .banner strong{font-weight:700;}
+  .gate{max-width:440px; margin:40px auto;}
+  .gate form{display:flex; flex-direction:column; gap:12px; margin-top:6px;}
+  label.lbl{font-size:12px; font-weight:600; color:var(--ink-2); text-transform:uppercase; letter-spacing:.05em;}
+  input[type=password], input[type=date], select{font-family:var(--font-body); font-size:14px; padding:9px 12px; border:1.5px solid var(--hair); border-radius:8px; background:var(--field); color:var(--ink);}
+  input:focus, select:focus, button:focus-visible, summary:focus-visible, svg:focus-visible{outline:2px solid var(--s1); outline-offset:2px;}
+  button.primary{font-family:var(--font-body); font-weight:700; font-size:14.5px; color:#0E2138; background:var(--amber); border:none; border-radius:9px; padding:11px 20px; cursor:pointer;}
+  button.primary:disabled{opacity:.55; cursor:not-allowed;}
+  button.ghost{font-family:var(--font-body); font-weight:600; font-size:13px; color:var(--ink); background:transparent; border:1.5px solid var(--hair); border-radius:8px; padding:8px 14px; cursor:pointer;}
+  button.ghost:hover{border-color:var(--s1);}
+  #gateMsg{font-size:13px; color:var(--crit); font-weight:600; min-height:18px;}
+
+  /* Filters */
+  .filters{display:flex; gap:14px; align-items:flex-end; flex-wrap:wrap; margin-bottom:18px;}
+  .fgroup{display:flex; flex-direction:column; gap:5px;}
+  .stamp{font-family:var(--font-mono); font-size:11.5px; color:var(--muted); align-self:center;}
+
+  /* Tiles */
+  .tiles{display:grid; grid-template-columns:repeat(6,1fr); gap:12px; margin-bottom:18px;}
+  @media (max-width:1000px){ .tiles{grid-template-columns:repeat(3,1fr);} }
+  @media (max-width:520px){ .tiles{grid-template-columns:1fr 1fr;} }
+  .tile{background:var(--surface); border:1px solid var(--hair); border-radius:12px; padding:14px 16px;}
+  .tile-label{font-size:12px; color:var(--ink-2); margin:0 0 6px;}
+  .tile-value{font-size:28px; font-weight:600; line-height:1.1;}
+  .tile-sub{font-size:12px; color:var(--muted); margin-top:4px;}
+
+  /* Charts */
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:18px;}
+  @media (max-width:900px){ .grid2{grid-template-columns:1fr;} }
+  .chart-card{margin-bottom:0;}
+  .viz{position:relative;}
+  .viz svg{width:100%; height:auto; display:block; overflow:visible;}
+  .viz text{font-family:var(--font-body); fill:var(--muted); font-size:11px;}
+  .viz text.val{fill:var(--ink-2); font-size:11.5px; font-weight:600;}
+  .viz text.cat{fill:var(--ink-2); font-size:12px;}
+  .grid-line{stroke:var(--grid); stroke-width:1;}
+  .axis-line{stroke:var(--axis); stroke-width:1;}
+  .seg{transition:filter .1s;}
+  .seg:hover, .seg:focus{filter:brightness(1.12);}
+  .empty{color:var(--muted); font-size:13.5px; padding:18px 0;}
+  .legend{display:flex; flex-wrap:wrap; gap:6px 16px; margin-top:10px; font-size:12.5px; color:var(--ink-2);}
+  .legend span.item{display:inline-flex; align-items:center; gap:6px;}
+  .swatch{width:10px; height:10px; border-radius:2px; display:inline-block;}
+  .swatch.line{height:3px; width:14px; border-radius:2px;}
+  details.tv{margin-top:10px; font-size:12.5px;}
+  details.tv summary{cursor:pointer; color:var(--ink-2); font-weight:600;}
+  .tv-scroll{max-height:240px; overflow:auto; margin-top:8px;}
+  table{border-collapse:collapse; width:100%; font-size:12.5px;}
+  th, td{text-align:left; padding:7px 10px; border-bottom:1px solid var(--grid); white-space:nowrap;}
+  th{color:var(--ink-2); font-weight:600; position:sticky; top:0; background:var(--surface);}
+  td.num{font-variant-numeric:tabular-nums;}
+  .chip{display:inline-block; font-size:11.5px; font-weight:700; padding:2px 8px; border-radius:6px; border:1px solid var(--hair);}
+  .chip.crit{color:var(--crit); border-color:var(--crit);}
+  .chip.warn{color:var(--ink); border-color:var(--warn);}
+
+  /* Tooltip */
+  #tip{position:fixed; z-index:50; pointer-events:none; background:var(--surface); color:var(--ink); border:1px solid var(--axis); border-radius:8px; padding:8px 10px; font-size:12.5px; box-shadow:0 8px 24px -10px rgba(0,0,0,.35); max-width:260px;}
+  #tip .t-title{color:var(--ink-2); margin-bottom:4px; font-size:12px;}
+  #tip .t-row{display:flex; align-items:center; gap:8px; margin-top:2px;}
+  #tip .t-key{width:12px; height:3px; border-radius:2px; flex:0 0 auto;}
+  #tip .t-val{font-weight:700;}
+  #tip .t-lab{color:var(--ink-2);}
+  .loading .viz, .loading .tiles{opacity:.55; transition:opacity .15s;}
+  .actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-row">
+    <div class="brand-block">
+      <img class="logo-mark" src="logo.png" alt="EcoOils Mentari">
+      <div>
+        <p class="brand-eyebrow" data-i18n="eyebrow">PT EcoOils Jaya Indonesia · HSSE</p>
+        <p class="brand-sub" data-i18n="subtitle">Mentari Project · Sei Mangkei</p>
+        <h1 class="title" data-i18n="title">Admin · Health Trends</h1>
+      </div>
+    </div>
+    <div class="top-tools">
+      <div class="lang-toggle" role="group" aria-label="Language">
+        <button type="button" class="lang-btn active" data-lang="en">EN</button>
+        <button type="button" class="lang-btn" data-lang="bi">BI</button>
+      </div>
+      <div class="ver" id="ver"></div>
+      <div class="top-links">
+        <a class="top-link" href="index.html" data-i18n="back">← Health Record</a>
+        <button type="button" class="top-link" id="lockBtn" hidden data-i18n="lock">Lock</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="card gate" id="gate" hidden>
+    <h2 data-i18n="gateTitle">Admin access</h2>
+    <p class="sub" data-i18n="gateSub">Enter the admin key to view trends and details.</p>
+    <form id="gateForm" autocomplete="off">
+      <label class="lbl" for="gateKey" data-i18n="keyLabel">Admin key</label>
+      <input type="password" id="gateKey" autocomplete="off" required>
+      <div id="gateMsg" role="alert"></div>
+      <button type="submit" class="primary" id="gateBtn" data-i18n="unlock">Unlock</button>
+    </form>
+  </section>
+
+  <div id="banner" class="banner" hidden></div>
+  <div id="loadMsg" class="empty" hidden></div>
+
+  <div id="dash" hidden>
+    <div class="filters" id="filters">
+      <div class="fgroup"><label class="lbl" for="fRange" data-i18n="fRange">Period</label><select id="fRange"></select></div>
+      <div class="fgroup" id="fFromWrap" hidden><label class="lbl" for="fFrom" data-i18n="fFrom">From</label><input type="date" id="fFrom"></div>
+      <div class="fgroup" id="fToWrap" hidden><label class="lbl" for="fTo" data-i18n="fTo">To</label><input type="date" id="fTo"></div>
+      <div class="fgroup"><label class="lbl" for="fContractor" data-i18n="fContractor">Contractor</label><select id="fContractor"></select></div>
+      <button type="button" class="ghost" id="refreshBtn" data-i18n="refresh">Refresh</button>
+      <span class="stamp" id="stamp"></span>
+    </div>
+
+    <div class="tiles" id="tiles"></div>
+
+    <div class="grid2">
+      <section class="card chart-card" style="grid-column:1/-1">
+        <h2 data-i18n="cActivity">Activity over time</h2>
+        <p class="sub" id="cActivitySub"></p>
+        <div class="viz" id="vActivity"></div>
+      </section>
+      <section class="card chart-card">
+        <h2 data-i18n="cAlcohol">Alcohol test outcomes by contractor</h2>
+        <p class="sub" data-i18n="cAlcoholSub">Pass, refused / not completed and fail, in the selected period.</p>
+        <div class="viz" id="vAlcohol"></div>
+      </section>
+      <section class="card chart-card">
+        <h2 data-i18n="cBpBand">Blood pressure readings by contractor</h2>
+        <p class="sub" id="cBpBandSub"></p>
+        <div class="viz" id="vBpBand"></div>
+      </section>
+      <section class="card chart-card" style="grid-column:1/-1">
+        <h2 data-i18n="cBpAvg">Average blood pressure over time</h2>
+        <p class="sub" data-i18n="cBpAvgSub">Average systolic and diastolic (mmHg) of all readings that could be read.</p>
+        <div class="viz" id="vBpAvg"></div>
+      </section>
+    </div>
+
+    <div id="namesSection" hidden>
+      <h2 class="section-title" data-i18n="namesTitle">People to follow up</h2>
+      <section class="card">
+        <p class="sub" id="namesSub"></p>
+        <div class="tv-scroll" style="max-height:420px" id="namesTable"></div>
+        <div class="actions">
+          <button type="button" class="ghost" id="expAlc" data-i18n="expAlc">Export alcohol records (CSV)</button>
+          <button type="button" class="ghost" id="expBp" data-i18n="expBp">Export blood pressure records (CSV)</button>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>
+
+<div id="tip" hidden></div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ───────────── Settings ─────────────
+  const APP_VERSION = "1.1.0";
+  // Same Apps Script web app the two tools already use.
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbytAJat3KB9WqhixDyEJXE-cORp_WN7p6_nK4X_fLcLZiRKqDmZFCWA9qJ-i7JZ_zSz/exec";
+  const BP_SHEET = "BloodPressure";
+  // The admin key is NOT in this file. It is stored in the Apps Script (Script Properties → ADMIN_KEY)
+  // and checked there. This page only sends what you type.
+
+  // Blood pressure thresholds (mmHg) — editable defaults, align with site medical guidance.
+  const THRESH = { highSys: 140, highDia: 90, lowSys: 90, lowDia: 60 };
+  const REPEAT_MIN = 2;                 // repeat count that puts a person on the follow-up list
+  const IDLE_MS = 15 * 60 * 1000;       // auto-lock after 15 minutes without activity
+  const TZ_OFFSET_H = 7;                // Sei Mangkei / WIB
+
+  // ───────────── Translations ─────────────
+  const I18N = {
+    en: {
+      eyebrow:"PT EcoOils Jaya Indonesia · HSSE", subtitle:"Mentari Project · Sei Mangkei", title:"Admin · Health Trends",
+      back:"← Health Record", lock:"Lock",
+      gateTitle:"Admin access", gateSub:"Enter the admin key to view trends and details.", keyLabel:"Admin key", unlock:"Unlock",
+      wrongKey:"Incorrect key.", tooMany:"Too many attempts. Try again in 15 minutes.", notConfigured:"ADMIN_KEY is not set in the Script yet.", netErr:"Couldn't reach the server.",
+      limitedBanner:"<strong>Totals only.</strong> The Script is not enforcing the admin key yet, so names and individual readings are hidden. Apply the Code.gs update to unlock full detail.",
+      fullBanner:"",
+      fRange:"Period", fFrom:"From", fTo:"To", fContractor:"Contractor", refresh:"Refresh",
+      r7:"Last 7 days", r30:"Last 30 days", r90:"Last 90 days", r180:"Last 180 days", rAll:"All time", rCustom:"Custom range",
+      allContractors:"All contractors", updated:"Updated",
+      tAlcTests:"Alcohol tests", tAlcPass:"Alcohol pass rate", tAlcBad:"Alcohol fail / refused",
+      tBpChecks:"BP check-ups", tBpFlag:"BP high / low", tBpNoGo:"BP No-Go",
+      ofTotal:"of {n} readable", inPeriod:"in period",
+      cActivity:"Activity over time", cActivitySubDay:"Alcohol tests and blood pressure check-ups per day.", cActivitySubWeek:"Alcohol tests and blood pressure check-ups per week (week starting Monday).",
+      cAlcohol:"Alcohol test outcomes by contractor", cAlcoholSub:"Pass, refused / not completed and fail, in the selected period.",
+      cBpBand:"Blood pressure readings by contractor", cBpBandSub:"High is {hs}/{hd} or above; low is below {ls}/{ld}.",
+      cBpAvg:"Average blood pressure over time", cBpAvgSub:"Average systolic and diastolic (mmHg) of all readings that could be read.",
+      sAlc:"Alcohol tests", sBp:"BP check-ups", sSys:"Systolic", sDia:"Diastolic",
+      oPass:"Pass", oNa:"Refused / not completed", oFail:"Fail", bNormal:"Normal", bLow:"Low", bHigh:"High", bUnknown:"Unreadable",
+      noData:"No records in this period.", tableView:"Table view", contractor:"Contractor", period:"Period", total:"Total",
+      namesTitle:"People to follow up",
+      namesSub:"Anyone with {n}+ non-pass alcohol tests or {n}+ high BP readings in the period, or flagged in both.",
+      noNames:"Nobody meets the follow-up criteria in this period.",
+      cName:"Name", cAlcBad:"Alcohol non-pass", cBpHigh:"BP high", cLast:"Last seen", cFlag:"Flag", fBoth:"Both", fAlc:"Alcohol", fBp:"BP",
+      expAlc:"Export alcohol records (CSV)", expBp:"Export blood pressure records (CSV)",
+      loading:"Loading…", loadFail:"Couldn't load the data. Check your connection and press Refresh.",
+      dismissed:"Locked after 15 minutes of inactivity."
+    },
+    bi: {
+      eyebrow:"PT EcoOils Jaya Indonesia · HSSE", subtitle:"Proyek Mentari · Sei Mangkei", title:"Admin · Tren Kesehatan",
+      back:"← Catatan Kesehatan", lock:"Kunci",
+      gateTitle:"Akses admin", gateSub:"Masukkan kunci admin untuk melihat tren dan detail.", keyLabel:"Kunci admin", unlock:"Buka",
+      wrongKey:"Kunci salah.", tooMany:"Terlalu banyak percobaan. Coba lagi dalam 15 menit.", notConfigured:"ADMIN_KEY belum diatur di Script.", netErr:"Tidak dapat terhubung ke server.",
+      limitedBanner:"<strong>Hanya total.</strong> Script belum menerapkan kunci admin, sehingga nama dan hasil pemeriksaan per orang disembunyikan. Terapkan pembaruan Code.gs untuk membuka detail penuh.",
+      fullBanner:"",
+      fRange:"Periode", fFrom:"Dari", fTo:"Sampai", fContractor:"Kontraktor", refresh:"Muat ulang",
+      r7:"7 hari terakhir", r30:"30 hari terakhir", r90:"90 hari terakhir", r180:"180 hari terakhir", rAll:"Semua waktu", rCustom:"Rentang kustom",
+      allContractors:"Semua kontraktor", updated:"Diperbarui",
+      tAlcTests:"Tes alkohol", tAlcPass:"Tingkat lulus alkohol", tAlcBad:"Alkohol gagal / menolak",
+      tBpChecks:"Pemeriksaan TD", tBpFlag:"TD tinggi / rendah", tBpNoGo:"TD No-Go",
+      ofTotal:"dari {n} terbaca", inPeriod:"dalam periode",
+      cActivity:"Aktivitas dari waktu ke waktu", cActivitySubDay:"Tes alkohol dan pemeriksaan tekanan darah per hari.", cActivitySubWeek:"Tes alkohol dan pemeriksaan tekanan darah per minggu (minggu mulai Senin).",
+      cAlcohol:"Hasil tes alkohol per kontraktor", cAlcoholSub:"Lulus, menolak / tidak selesai, dan gagal pada periode terpilih.",
+      cBpBand:"Hasil tekanan darah per kontraktor", cBpBandSub:"Tinggi adalah {hs}/{hd} atau lebih; rendah di bawah {ls}/{ld}.",
+      cBpAvg:"Rata-rata tekanan darah dari waktu ke waktu", cBpAvgSub:"Rata-rata sistolik dan diastolik (mmHg) dari semua hasil yang terbaca.",
+      sAlc:"Tes alkohol", sBp:"Pemeriksaan TD", sSys:"Sistolik", sDia:"Diastolik",
+      oPass:"Lulus", oNa:"Menolak / tidak selesai", oFail:"Gagal", bNormal:"Normal", bLow:"Rendah", bHigh:"Tinggi", bUnknown:"Tidak terbaca",
+      noData:"Tidak ada catatan pada periode ini.", tableView:"Tampilan tabel", contractor:"Kontraktor", period:"Periode", total:"Total",
+      namesTitle:"Orang yang perlu ditindaklanjuti",
+      namesSub:"Siapa pun dengan {n}+ tes alkohol tidak lulus atau {n}+ hasil TD tinggi pada periode ini, atau tertandai di keduanya.",
+      noNames:"Tidak ada yang memenuhi kriteria tindak lanjut pada periode ini.",
+      cName:"Nama", cAlcBad:"Alkohol tidak lulus", cBpHigh:"TD tinggi", cLast:"Terakhir", cFlag:"Tanda", fBoth:"Keduanya", fAlc:"Alkohol", fBp:"TD",
+      expAlc:"Ekspor catatan alkohol (CSV)", expBp:"Ekspor catatan tekanan darah (CSV)",
+      loading:"Memuat…", loadFail:"Tidak dapat memuat data. Periksa koneksi lalu tekan Muat ulang.",
+      dismissed:"Terkunci setelah 15 menit tidak aktif."
+    }
+  };
+  let lang = "en";
+  const T = (k, vars) => {
+    let s = (I18N[lang][k] !== undefined ? I18N[lang][k] : I18N.en[k]) || k;
+    if(vars) for(const v in vars) s = s.split("{"+v+"}").join(vars[v]);
+    return s;
+  };
+
+  // ───────────── DOM helpers (textContent only — data is untrusted) ─────────────
+  const NS = "http://www.w3.org/2000/svg";
+  function setAttrs(e, a){
+    for(const k in (a||{})){
+      const v = a[k]; if(v == null || v === false) continue;
+      if(k.slice(0,2) === "on") e.addEventListener(k.slice(2), v); else e.setAttribute(k, v === true ? "" : v);
+    }
+  }
+  function add(e, kids){
+    kids.flat().forEach(k => { if(k == null || k === false) return; e.append(k.nodeType ? k : document.createTextNode(String(k))); });
+    return e;
+  }
+  const h = (tag, attrs, ...kids) => { const e = document.createElement(tag); setAttrs(e, attrs); return add(e, kids); };
+  const s = (tag, attrs, ...kids) => { const e = document.createElementNS(NS, tag); setAttrs(e, attrs); return add(e, kids); };
+  const $ = id => document.getElementById(id);
+
+  // ───────────── Dates ─────────────
+  const pad = n => String(n).padStart(2, "0");
+  const MS_DAY = 86400000;
+  function ymdToMs(y){ const [a,b,c] = y.split("-").map(Number); return Date.UTC(a, b-1, c); }
+  function msToYmd(ms){ const d = new Date(ms); return d.getUTCFullYear()+"-"+pad(d.getUTCMonth()+1)+"-"+pad(d.getUTCDate()); }
+  function todayYmd(){ return msToYmd(Date.now() + TZ_OFFSET_H*3600000); }
+  function toYMD(v){
+    if(v == null || v === "") return "";
+    const str = String(v).trim();
+    if(/^\d{4}-\d{2}-\d{2}$/.test(str)) return str;
+    if(/^\d{4}-\d{2}-\d{2}T/.test(str)){
+      if(/(Z|[+-]\d{2}:?\d{2})$/.test(str)){           // an instant: show it as a WIB calendar date
+        const d = new Date(str); if(!isNaN(d)) return msToYmd(d.getTime() + TZ_OFFSET_H*3600000);
+      }
+      return str.slice(0,10);
+    }
+    const m = str.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{4})$/);   // d/m/yyyy
+    if(m) return m[3]+"-"+pad(m[2])+"-"+pad(m[1]);
+    return "";
+  }
+  function weekStart(ymd){ const ms = ymdToMs(ymd); const dow = (new Date(ms).getUTCDay() + 6) % 7; return msToYmd(ms - dow*MS_DAY); }
+  function fmtShort(ymd){
+    const f = new Intl.DateTimeFormat(lang === "bi" ? "id-ID" : "en-GB", { day:"numeric", month:"short", timeZone:"UTC" });
+    return f.format(new Date(ymdToMs(ymd)));
+  }
+
+  // ───────────── Data normalisation ─────────────
+  function normalizeContractor(c){
+    const u = String(c||"").toUpperCase();
+    if(!u.trim()) return "Unspecified";
+    if(u.includes("KKS")) return "PT KKS";
+    if(u.includes("PBS")) return "PT PBS";
+    if(u.includes("GSB")) return "PT GSB";
+    if(u.includes("WEN")) return "PT WEN";
+    if(u.includes("KOKOH")) return "PT Kokoh Semesta";
+    return String(c).trim();
+  }
+  const nameKey = n => String(n||"").toLowerCase().replace(/\s+/g, " ").trim();
+  function parseBP(t){
+    const m = String(t||"").match(/(\d{2,3})\s*[\/\\-]\s*(\d{2,3})/);
+    if(!m) return null;
+    const sys = +m[1], dia = +m[2];
+    if(sys < 50 || sys > 260 || dia < 30 || dia > 160 || dia >= sys) return null;
+    return { sys, dia };
+  }
+  function bpClass(sys, dia, remarks){
+    if(sys != null){
+      if(sys >= THRESH.highSys || dia >= THRESH.highDia) return "high";
+      if(sys < THRESH.lowSys || dia < THRESH.lowDia) return "low";
+      return "normal";
+    }
+    const r = String(remarks||"").toLowerCase();
+    if(r.indexOf("high") > -1 || r.indexOf("tinggi") > -1) return "high";
+    if(r.indexOf("low") > -1 || r.indexOf("rendah") > -1) return "low";
+    if(r.indexOf("normal") > -1) return "normal";
+    return "unknown";
+  }
+  function normAlc(r, keepNames){
+    const o = String(r.outcome||"");
+    return { raw:r, date:toYMD(r.date), contractor:normalizeContractor(r.contractor),
+      name: keepNames ? String(r.employee||r.name||"").trim() : "",
+      out: o === "Pass" ? "pass" : o === "Fail" ? "fail" : "na" };
+  }
+  function normBp(r, keepNames){
+    const p = parseBP(r.tension);
+    const sys = p ? p.sys : null, dia = p ? p.dia : null;
+    return { raw:r, date:toYMD(r.date), contractor:normalizeContractor(r.contractor),
+      name: keepNames ? String(r.name||r.employee||"").trim() : "",
+      sys, dia, cls: bpClass(sys, dia, r.remarks), nogo: String(r.goNoGo||"") !== "Go" && String(r.goNoGo||"") !== "" };
+  }
+
+  // ───────────── State ─────────────
+  const state = { mode:"boot", key:"", alc:[], bp:[], range:"30", from:"", to:"", contractor:"", stamp:"", idleTimer:null };
+
+  // ───────────── Network ─────────────
+  async function getJSON(url, opts){ const res = await fetch(url, opts); return res.json(); }
+  const unpack = j => ({ locked: !!(j && j.locked), error: j && j.error, records: Array.isArray(j) ? j : ((j && j.records) || []) });
+  async function loadPublic(){
+    const [a, b] = await Promise.all([ getJSON(SCRIPT_URL), getJSON(SCRIPT_URL + "?sheet=" + encodeURIComponent(BP_SHEET)) ]);
+    return { alc: unpack(a), bp: unpack(b) };
+  }
+  async function loadAdmin(key){
+    const post = sheet => getJSON(SCRIPT_URL, { method:"POST", headers:{ "Content-Type":"text/plain;charset=utf-8" }, body: JSON.stringify({ action:"admin", key, sheet }) });
+    const [a, b] = await Promise.all([ post(""), post(BP_SHEET) ]);
+    return { alc: unpack(a), bp: unpack(b) };
+  }
+  function adminError(p){ return p.alc.error || p.bp.error || ""; }
+
+  // ───────────── Boot / gate / lock ─────────────
+  async function boot(){
+    setLoading(true);
+    try{
+      const pub = await loadPublic();
+      if(pub.alc.locked || pub.bp.locked){
+        state.mode = "gate";
+        let saved = ""; try{ saved = sessionStorage.getItem("ecoAdminKey") || ""; }catch(e){}
+        const ok = saved ? await tryUnlock(saved, true) : false;
+        if(!ok) showGate();
+      } else {
+        // Script is not enforcing a key yet: show totals only, never names.
+        state.mode = "limited";
+        state.alc = pub.alc.records.map(r => normAlc(r, false));
+        state.bp  = pub.bp.records.map(r => normBp(r, false));
+        stampNow(); showDash();
+      }
+    }catch(err){ showLoadError(); }
+    finally{ setLoading(false); }
+  }
+  function showGate(){
+    $("dash").hidden = true; $("banner").hidden = true; $("loadMsg").hidden = true; $("lockBtn").hidden = true;
+    $("gate").hidden = false; setLoading(false);
+    setTimeout(() => { try{ $("gateKey").focus(); }catch(e){} }, 50);
+  }
+  async function tryUnlock(key, silent){
+    const msg = $("gateMsg"); msg.textContent = "";
+    try{
+      const p = await loadAdmin(key);
+      const e = adminError(p);
+      if(e){
+        if(!silent) msg.textContent = e === "locked" ? T("tooMany") : e === "not_configured" ? T("notConfigured") : T("wrongKey");
+        try{ sessionStorage.removeItem("ecoAdminKey"); }catch(x){}
+        return false;
+      }
+      state.mode = "full"; state.key = key;
+      state.alc = p.alc.records.map(r => normAlc(r, true));
+      state.bp  = p.bp.records.map(r => normBp(r, true));
+      try{ sessionStorage.setItem("ecoAdminKey", key); }catch(x){}
+      stampNow(); showDash(); armIdle();
+      return true;
+    }catch(err){ if(!silent) msg.textContent = T("netErr"); return false; }
+  }
+  function lockNow(){
+    state.key = ""; state.alc = []; state.bp = []; state.mode = "gate";
+    try{ sessionStorage.removeItem("ecoAdminKey"); }catch(x){}
+    clearTimeout(state.idleTimer);
+    $("gateKey").value = ""; showGate();
+  }
+  function armIdle(){
+    clearTimeout(state.idleTimer);
+    if(state.mode !== "full") return;
+    state.idleTimer = setTimeout(() => { lockNow(); $("gateMsg").textContent = T("dismissed"); }, IDLE_MS);
+  }
+  ["pointerdown","keydown","scroll"].forEach(ev => document.addEventListener(ev, () => { if(state.mode === "full") armIdle(); }, { passive:true }));
+
+  async function refresh(){
+    setLoading(true);
+    try{
+      if(state.mode === "full"){
+        const p = await loadAdmin(state.key);
+        if(adminError(p)){ lockNow(); return; }
+        state.alc = p.alc.records.map(r => normAlc(r, true));
+        state.bp  = p.bp.records.map(r => normBp(r, true));
+      } else {
+        const pub = await loadPublic();
+        state.alc = pub.alc.records.map(r => normAlc(r, false));
+        state.bp  = pub.bp.records.map(r => normBp(r, false));
+      }
+      stampNow(); renderAll();
+    }catch(err){ showLoadError(); }
+    finally{ setLoading(false); }
+  }
+  function stampNow(){ const d = new Date(Date.now() + TZ_OFFSET_H*3600000); state.stamp = pad(d.getUTCHours()) + ":" + pad(d.getUTCMinutes()); }
+  function setLoading(on){ document.body.classList.toggle("loading", on); if(on && state.mode === "boot"){ $("loadMsg").hidden = false; $("loadMsg").textContent = T("loading"); } }
+  function showLoadError(){ $("loadMsg").hidden = false; $("loadMsg").textContent = T("loadFail"); }
+  function showDash(){
+    $("gate").hidden = true; $("loadMsg").hidden = true; $("dash").hidden = false;
+    $("lockBtn").hidden = state.mode !== "full";
+    renderAll();
+  }
+
+  // ───────────── Filtering ─────────────
+  function currentRange(){
+    const end = state.range === "custom" && state.to ? state.to : todayYmd();
+    let start;
+    if(state.range === "custom") start = state.from || msToYmd(ymdToMs(end) - 29*MS_DAY);
+    else if(state.range === "all"){
+      const ds = state.alc.concat(state.bp).map(r => r.date).filter(Boolean).sort();
+      start = ds.length ? ds[0] : end;
+    } else start = msToYmd(ymdToMs(end) - (Number(state.range) - 1) * MS_DAY);
+    if(start > end) start = end;
+    return { start, end };
+  }
+  function filtered(){
+    const { start, end } = currentRange();
+    const inR = r => r.date && r.date >= start && r.date <= end && (!state.contractor || r.contractor === state.contractor);
+    return { start, end, alc: state.alc.filter(inR), bp: state.bp.filter(inR) };
+  }
+
+  // ───────────── Tooltip ─────────────
+  const tip = $("tip");
+  function showTip(x, y, title, rows){
+    tip.replaceChildren();
+    if(title) tip.append(h("div", { class:"t-title" }, title));
+    rows.forEach(r => tip.append(h("div", { class:"t-row" },
+      h("span", { class:"t-key", style:"background:" + r.color }),
+      h("span", { class:"t-val" }, r.value), h("span", { class:"t-lab" }, r.label))));
+    tip.hidden = false;
+    const w = tip.offsetWidth, hgt = tip.offsetHeight;
+    let left = x + 14, top = y + 14;
+    if(left + w > window.innerWidth - 8) left = x - w - 14;
+    if(top + hgt > window.innerHeight - 8) top = y - hgt - 14;
+    tip.style.left = Math.max(8, left) + "px"; tip.style.top = Math.max(8, top) + "px";
+  }
+  const hideTip = () => { tip.hidden = true; };
+
+  // ───────────── Chart building blocks ─────────────
+  function legend(items){
+    return h("div", { class:"legend" }, items.map(i => h("span", { class:"item" },
+      h("span", { class:"swatch" + (i.line ? " line" : ""), style:"background:" + i.color }), (i.glyph ? i.glyph + " " : "") + i.name)));
+  }
+  function tableView(head, rows){
+    const tbl = h("table", null, h("thead", null, h("tr", null, head.map(c => h("th", null, c)))),
+      h("tbody", null, rows.map(r => h("tr", null, r.map((c, i) => h("td", { class: i ? "num" : "" }, c))))));
+    return h("details", { class:"tv" }, h("summary", null, T("tableView")), h("div", { class:"tv-scroll" }, tbl));
+  }
+  function niceStep(raw){
+    const p = Math.pow(10, Math.floor(Math.log10(raw || 1))), f = raw / p;
+    return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10) * p;
+  }
+  const fmtN = n => n == null ? "—" : Number(n).toLocaleString(lang === "bi" ? "id-ID" : "en-US", { maximumFractionDigits: 1 });
+
+  // cfg: { labels:[], series:[{name,color,values:[number|null]}], zeroBase:bool, unit:"" }
+  function lineChart(host, cfg){
+    host.replaceChildren();
+    const labels = cfg.labels, series = cfg.series, n = labels.length;
+    const vals = series.flatMap(x => x.values).filter(v => v != null);
+    if(!n || !vals.length){ host.append(h("div", { class:"empty" }, T("noData"))); return; }
+    const W = 720, H = 250, m = { l:44, r:18, t:14, b:30 }, pw = W - m.l - m.r, ph = H - m.t - m.b;
+    let lo = cfg.zeroBase ? 0 : Math.min.apply(null, vals), hi = Math.max.apply(null, vals);
+    if(!cfg.zeroBase){ const pad10 = Math.max(5, (hi - lo) * 0.15); lo -= pad10; hi += pad10; }
+    if(hi === lo) hi = lo + 1;
+    const step = niceStep((hi - lo) / 4);
+    lo = cfg.zeroBase ? 0 : Math.floor(lo / step) * step;
+    hi = lo + step * Math.ceil((hi - lo) / step);
+    const y = v => m.t + ph - ((v - lo) / (hi - lo)) * ph;
+    const x = i => n === 1 ? m.l + pw / 2 : m.l + (i * pw) / (n - 1);
+    const svg = s("svg", { viewBox:"0 0 " + W + " " + H, role:"img", tabindex:"0", "aria-label":cfg.title });
+    for(let v = lo; v <= hi + 1e-9; v += step){
+      svg.append(s("line", { class:"grid-line", x1:m.l, x2:W - m.r, y1:y(v), y2:y(v) }));
+      svg.append(s("text", { x:m.l - 8, y:y(v) + 4, "text-anchor":"end" }, fmtN(v)));
+    }
+    svg.append(s("line", { class:"axis-line", x1:m.l, x2:W - m.r, y1:y(lo), y2:y(lo) }));
+    const every = Math.max(1, Math.ceil(n / 6));
+    labels.forEach((lb, i) => {
+      if(i % every !== 0 && i !== n - 1) return;
+      if(i !== n - 1 && n - 1 - i < every / 2) return;
+      svg.append(s("text", { x:x(i), y:H - 8, "text-anchor": i === 0 && n > 1 ? "start" : i === n - 1 && n > 1 ? "end" : "middle" }, lb));
+    });
+    series.forEach(se => {
+      let d = "", pen = false, last = -1;
+      se.values.forEach((v, i) => { if(v == null){ if(!cfg.connectGaps) pen = false; return; } d += (pen ? "L" : "M") + x(i).toFixed(1) + " " + y(v).toFixed(1); pen = true; last = i; });
+      svg.append(s("path", { d, fill:"none", stroke:se.color, "stroke-width":2, "stroke-linejoin":"round", "stroke-linecap":"round" }));
+      if(last > -1) svg.append(s("circle", { cx:x(last), cy:y(se.values[last]), r:4, fill:se.color, stroke:"var(--surface)", "stroke-width":2 }));
+    });
+    const cross = s("line", { x1:0, x2:0, y1:m.t, y2:y(lo), stroke:"var(--axis)", "stroke-width":1, visibility:"hidden" });
+    const dots = series.map(se => s("circle", { r:4, fill:se.color, stroke:"var(--surface)", "stroke-width":2, visibility:"hidden" }));
+    svg.append(cross); dots.forEach(d => svg.append(d));
+    const show = (i, cx, cy) => {
+      i = Math.max(0, Math.min(n - 1, i));
+      cross.setAttribute("x1", x(i)); cross.setAttribute("x2", x(i)); cross.setAttribute("visibility", "visible");
+      dots.forEach((d, k) => { const v = series[k].values[i]; if(v == null) d.setAttribute("visibility", "hidden"); else { d.setAttribute("cx", x(i)); d.setAttribute("cy", y(v)); d.setAttribute("visibility", "visible"); } });
+      showTip(cx, cy, labels[i], series.map(se => ({ color:se.color, value: se.values[i] == null ? "—" : fmtN(se.values[i]) + (cfg.unit || ""), label:se.name })));
+    };
+    const hit = s("rect", { x:m.l, y:m.t, width:pw, height:ph, fill:"transparent" });
+    const idxAt = ev => { const r = svg.getBoundingClientRect(); const px = (ev.clientX - r.left) * (W / r.width); return n === 1 ? 0 : Math.round(((px - m.l) / pw) * (n - 1)); };
+    hit.addEventListener("pointermove", ev => show(idxAt(ev), ev.clientX, ev.clientY));
+    const leave = () => { hideTip(); cross.setAttribute("visibility", "hidden"); dots.forEach(d => d.setAttribute("visibility", "hidden")); };
+    hit.addEventListener("pointerleave", leave); svg.addEventListener("blur", leave);
+    let ki = n - 1;
+    svg.addEventListener("keydown", ev => {
+      if(ev.key === "ArrowLeft" || ev.key === "ArrowRight"){ ev.preventDefault(); ki = Math.max(0, Math.min(n - 1, ki + (ev.key === "ArrowLeft" ? -1 : 1))); const r = svg.getBoundingClientRect(); show(ki, r.left + (x(ki) / W) * r.width, r.top + r.height / 2); }
+    });
+    svg.append(hit);
+    host.append(svg, legend(series.map(se => ({ name:se.name, color:se.color, line:true }))));
+    const trs = []; labels.forEach((lb, i) => { if(series.some(se => se.values[i] != null)) trs.push([lb].concat(series.map(se => fmtN(se.values[i])))); });
+    host.append(tableView([T("period")].concat(series.map(se => se.name)), trs));
+  }
+
+  // cfg: { rows:[{label, segs:[{name,color,glyph,value}]}], title }
+  function barStack(host, cfg){
+    host.replaceChildren();
+    const rows = cfg.rows.filter(r => r.segs.some(sg => sg.value > 0));
+    if(!rows.length){ host.append(h("div", { class:"empty" }, T("noData"))); return; }
+    const W = 440, labelW = 92, rowH = 34, barH = 20, rightPad = 40, GAP = 2, R = 4;   // narrow viewBox keeps text readable in half-width cards
+    const tot = r => r.segs.reduce((a, sg) => a + sg.value, 0);
+    const maxT = Math.max.apply(null, rows.map(tot));
+    const scale = (W - labelW - rightPad) / maxT;
+    const svg = s("svg", { viewBox:"0 0 " + W + " " + (rows.length * rowH + 6), role:"img", "aria-label":cfg.title });
+    rows.forEach((r, i) => {
+      const y = i * rowH + 4, t = tot(r);
+      const lab = r.label.length > 15 ? r.label.slice(0, 14) + "…" : r.label;
+      svg.append(s("text", { class:"cat", x:0, y:y + barH / 2 + 4 }, s("title", null, r.label), lab));
+      let xx = labelW; const live = r.segs.filter(sg => sg.value > 0);
+      live.forEach((sg, k) => {
+        const w = Math.max(sg.value * scale - GAP, 2), isLast = k === live.length - 1, rr = isLast ? Math.min(R, w) : 0;
+        const d = "M" + xx + " " + y + "H" + (xx + w - rr) + (rr ? "A" + rr + " " + rr + " 0 0 1 " + (xx + w) + " " + (y + rr) + "V" + (y + barH - rr) + "A" + rr + " " + rr + " 0 0 1 " + (xx + w - rr) + " " + (y + barH) : "V" + (y + barH) + "H" + (xx + w)) + "H" + xx + "Z";
+        const pct = Math.round(sg.value / t * 100);
+        const tipRows = () => [{ color:sg.color, value:fmtN(sg.value), label:(sg.glyph ? sg.glyph + " " : "") + sg.name + " · " + pct + "%" }];
+        const seg = s("path", { class:"seg", d, fill:sg.color, tabindex:"0", "aria-label":r.label + ": " + sg.name + " " + sg.value });
+        seg.addEventListener("pointermove", ev => showTip(ev.clientX, ev.clientY, r.label, tipRows()));
+        seg.addEventListener("pointerleave", hideTip);
+        seg.addEventListener("focus", () => { const b = seg.getBoundingClientRect(); showTip(b.left + b.width / 2, b.top, r.label, tipRows()); });
+        seg.addEventListener("blur", hideTip);
+        const hitR = s("rect", { x:xx, y:y - 6, width:w + GAP, height:barH + 12, fill:"transparent" });
+        hitR.addEventListener("pointermove", ev => showTip(ev.clientX, ev.clientY, r.label, tipRows()));
+        hitR.addEventListener("pointerleave", hideTip);
+        svg.append(seg, hitR); xx += w + GAP;
+      });
+      svg.append(s("text", { class:"val", x:xx + 4, y:y + barH / 2 + 4 }, fmtN(t)));
+    });
+    host.append(svg);
+    const names = rows[0].segs.map(sg => ({ name:sg.name, color:sg.color, glyph:sg.glyph }));
+    host.append(legend(names));
+    host.append(tableView([T("contractor")].concat(names.map(n => n.name)).concat([T("total")]),
+      rows.map(r => [r.label].concat(r.segs.map(sg => fmtN(sg.value))).concat([fmtN(tot(r))]))));
+  }
+
+  // ───────────── Rendering ─────────────
+  function buckets(start, end){
+    const weekly = (ymdToMs(end) - ymdToMs(start)) / MS_DAY + 1 > 90;
+    const keys = [];
+    for(let ms = ymdToMs(weekly ? weekStart(start) : start); ms <= ymdToMs(end); ms += (weekly ? 7 : 1) * MS_DAY) keys.push(msToYmd(ms));
+    return { weekly, keys, of: ymd => weekly ? weekStart(ymd) : ymd };
+  }
+  function contractorsIn(list){ return Array.from(new Set(list.map(r => r.contractor))).sort(); }
+
+  function renderFilters(){
+    const keep = state.range;
+    const opts = [["7","r7"],["30","r30"],["90","r90"],["180","r180"],["all","rAll"],["custom","rCustom"]];
+    const sel = $("fRange"); sel.replaceChildren(...opts.map(o => h("option", { value:o[0] }, T(o[1])))); sel.value = keep;
+    const cs = $("fContractor"); const all = contractorsIn(state.alc.concat(state.bp));
+    cs.replaceChildren(h("option", { value:"" }, T("allContractors")), ...all.map(c => h("option", { value:c }, c)));
+    cs.value = all.indexOf(state.contractor) > -1 ? state.contractor : "";
+    state.contractor = cs.value;
+    const custom = state.range === "custom";
+    $("fFromWrap").hidden = !custom; $("fToWrap").hidden = !custom;
+    $("fFrom").value = state.from; $("fTo").value = state.to;
+    $("stamp").textContent = T("updated") + " " + state.stamp;
+  }
+
+  function tile(label, value, sub){
+    return h("div", { class:"tile" }, h("p", { class:"tile-label" }, label), h("div", { class:"tile-value" }, value), h("div", { class:"tile-sub" }, sub || ""));
+  }
+
+  function renderAll(){
+    document.querySelectorAll("[data-i18n]").forEach(el => { const k = el.dataset.i18n; el.textContent = T(k); });
+    document.documentElement.lang = lang === "bi" ? "id" : "en";
+    document.querySelectorAll(".lang-btn").forEach(b => b.classList.toggle("active", b.dataset.lang === lang));
+    $("ver").textContent = "v" + APP_VERSION;
+    const bn = $("banner");
+    if(state.mode === "limited"){ bn.hidden = false; bn.innerHTML = T("limitedBanner"); } else bn.hidden = true;   // static, trusted translation string
+    if($("dash").hidden) return;
+    renderFilters();
+    const f = filtered();
+    const alcTot = f.alc.length, alcPass = f.alc.filter(r => r.out === "pass").length;
+    const alcBad = alcTot - alcPass;
+    const bpTot = f.bp.length, bpRead = f.bp.filter(r => r.cls !== "unknown");
+    const bpHigh = f.bp.filter(r => r.cls === "high").length, bpLow = f.bp.filter(r => r.cls === "low").length;
+    const bpNoGo = f.bp.filter(r => r.nogo).length;
+    const pct = (a, b) => b ? (a / b * 100).toFixed(1).replace(/\.0$/, "") + "%" : "—";
+    $("tiles").replaceChildren(
+      tile(T("tAlcTests"), fmtN(alcTot), T("inPeriod")),
+      tile(T("tAlcPass"), pct(alcPass, alcTot), alcTot ? alcPass + " / " + alcTot : ""),
+      tile(T("tAlcBad"), fmtN(alcBad), pct(alcBad, alcTot)),
+      tile(T("tBpChecks"), fmtN(bpTot), T("inPeriod")),
+      tile(T("tBpFlag"), fmtN(bpHigh) + " / " + fmtN(bpLow), T("ofTotal", { n: bpRead.length })),
+      tile(T("tBpNoGo"), fmtN(bpNoGo), pct(bpNoGo, bpTot)));
+
+    // Activity
+    const bk = buckets(f.start, f.end);
+    const aCount = {}, bCount = {};
+    bk.keys.forEach(k => { aCount[k] = 0; bCount[k] = 0; });
+    f.alc.forEach(r => { const k = bk.of(r.date); if(k in aCount) aCount[k]++; });
+    f.bp.forEach(r => { const k = bk.of(r.date); if(k in bCount) bCount[k]++; });
+    $("cActivitySub").textContent = T(bk.weekly ? "cActivitySubWeek" : "cActivitySubDay");
+    lineChart($("vActivity"), { title:T("cActivity"), zeroBase:true,
+      labels: bk.keys.map(fmtShort),
+      series:[ { name:T("sAlc"), color:"var(--s1)", values:bk.keys.map(k => aCount[k]) }, { name:T("sBp"), color:"var(--s2)", values:bk.keys.map(k => bCount[k]) } ] });
+
+    // Alcohol by contractor
+    const OC = [ ["pass","oPass","var(--good)","✓"], ["na","oNa","var(--warn)","!"], ["fail","oFail","var(--crit)","✕"] ];
+    barStack($("vAlcohol"), { title:T("cAlcohol"), rows: contractorsIn(f.alc).map(c => ({ label:c,
+      segs: OC.map(o => ({ name:T(o[1]), color:o[2], glyph:o[3], value:f.alc.filter(r => r.contractor === c && r.out === o[0]).length })) })) });
+
+    // BP by contractor
+    $("cBpBandSub").textContent = T("cBpBandSub", { hs:THRESH.highSys, hd:THRESH.highDia, ls:THRESH.lowSys, ld:THRESH.lowDia });
+    const BC = [ ["normal","bNormal","var(--good)","✓"], ["low","bLow","var(--warn)","▼"], ["high","bHigh","var(--crit)","▲"], ["unknown","bUnknown","var(--axis)","?"] ];
+    barStack($("vBpBand"), { title:T("cBpBand"), rows: contractorsIn(f.bp).map(c => ({ label:c,
+      segs: BC.map(o => ({ name:T(o[1]), color:o[2], glyph:o[3], value:f.bp.filter(r => r.contractor === c && r.cls === o[0]).length })) })) });
+
+    // BP average
+    const sums = {}; bk.keys.forEach(k => { sums[k] = { s:0, d:0, n:0 }; });
+    f.bp.forEach(r => { if(r.sys == null) return; const k = bk.of(r.date); if(sums[k]){ sums[k].s += r.sys; sums[k].d += r.dia; sums[k].n++; } });
+    const avg = key => bk.keys.map(k => sums[k].n ? Math.round(sums[k][key] / sums[k].n * 10) / 10 : null);
+    lineChart($("vBpAvg"), { title:T("cBpAvg"), zeroBase:false, connectGaps:true, unit:" mmHg", labels: bk.keys.map(fmtShort),
+      series:[ { name:T("sSys"), color:"var(--s1)", values:avg("s") }, { name:T("sDia"), color:"var(--s2)", values:avg("d") } ] });
+
+    renderNames(f);
+  }
+
+  function renderNames(f){
+    const sec = $("namesSection");
+    if(state.mode !== "full"){ sec.hidden = true; return; }
+    sec.hidden = false;
+    $("namesSub").textContent = T("namesSub", { n: REPEAT_MIN });
+    const people = {};
+    const touch = (r, k) => { const id = nameKey(r.name); if(!id) return null; return people[id] || (people[id] = { name:r.name, contractor:r.contractor, alc:0, bp:0, last:"" }); };
+    f.alc.forEach(r => { const p = touch(r); if(!p) return; if(r.out !== "pass") p.alc++; if(r.date >= p.last){ p.last = r.date; p.contractor = r.contractor; } });
+    f.bp.forEach(r => { const p = touch(r); if(!p) return; if(r.cls === "high") p.bp++; if(r.date >= p.last){ p.last = r.date; p.contractor = r.contractor; } });
+    const list = Object.values(people).filter(p => p.alc >= REPEAT_MIN || p.bp >= REPEAT_MIN || (p.alc >= 1 && p.bp >= 1))
+      .sort((a, b) => (b.alc + b.bp) - (a.alc + a.bp) || (a.last < b.last ? 1 : -1));
+    const host = $("namesTable"); host.replaceChildren();
+    if(!list.length){ host.append(h("div", { class:"empty" }, T("noNames"))); }
+    else host.append(h("table", null,
+      h("thead", null, h("tr", null, [T("cName"), T("contractor"), T("cAlcBad"), T("cBpHigh"), T("cLast"), T("cFlag")].map(c => h("th", null, c)))),
+      h("tbody", null, list.map(p => h("tr", null,
+        h("td", null, p.name), h("td", null, p.contractor), h("td", { class:"num" }, p.alc), h("td", { class:"num" }, p.bp),
+        h("td", { class:"num" }, p.last ? fmtShort(p.last) : "—"),
+        h("td", null, h("span", { class:"chip " + (p.alc && p.bp ? "crit" : "warn") }, p.alc && p.bp ? T("fBoth") : p.alc ? T("fAlc") : T("fBp"))))))));
+  }
+
+  // ───────────── CSV export (full mode only) ─────────────
+  function toCSV(rows){
+    const keys = Array.from(new Set(rows.flatMap(r => Object.keys(r))));
+    const esc = v => { let t = v == null ? "" : String(v); if(/^[=+\-@\t\r]/.test(t)) t = "'" + t; return /[",\n\r]/.test(t) ? '"' + t.replace(/"/g, '""') + '"' : t; };
+    return [keys.join(",")].concat(rows.map(r => keys.map(k => esc(r[k])).join(","))).join("\r\n");
+  }
+  function download(name, text){
+    const a = h("a", { href:URL.createObjectURL(new Blob(["﻿" + text], { type:"text/csv;charset=utf-8" })), download:name });
+    document.body.append(a); a.click(); a.remove();
+  }
+  function exportData(which){
+    if(state.mode !== "full") return;
+    const f = filtered();
+    download((which === "alc" ? "alcohol-" : "blood-pressure-") + f.start + "_" + f.end + ".csv", toCSV((which === "alc" ? f.alc : f.bp).map(r => r.raw)));
+  }
+
+  // ───────────── Wiring ─────────────
+  document.querySelectorAll(".lang-btn").forEach(b => b.addEventListener("click", () => { lang = b.dataset.lang; renderAll(); }));
+  $("fRange").addEventListener("change", e => { state.range = e.target.value; if(state.range === "custom" && !state.to){ state.to = todayYmd(); state.from = msToYmd(ymdToMs(state.to) - 29*MS_DAY); } renderAll(); });
+  $("fFrom").addEventListener("change", e => { state.from = e.target.value; renderAll(); });
+  $("fTo").addEventListener("change", e => { state.to = e.target.value; renderAll(); });
+  $("fContractor").addEventListener("change", e => { state.contractor = e.target.value; renderAll(); });
+  $("refreshBtn").addEventListener("click", refresh);
+  $("lockBtn").addEventListener("click", lockNow);
+  $("expAlc").addEventListener("click", () => exportData("alc"));
+  $("expBp").addEventListener("click", () => exportData("bp"));
+  $("gateForm").addEventListener("submit", async e => {
+    e.preventDefault();
+    const btn = $("gateBtn"), key = $("gateKey").value;
+    if(!key) return;
+    btn.disabled = true;
+    const ok = await tryUnlock(key, false);
+    btn.disabled = false;
+    if(ok) $("gateKey").value = "";
+  });
+
+  $("ver").textContent = "v" + APP_VERSION;
+  boot();
+})();
+</script>
+</body>
+</html>
