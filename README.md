@@ -5,4 +5,6 @@
 
 The admin key is **not** in any file here. It lives in the Apps Script (Script Properties → `ADMIN_KEY`) and is checked there. Until the Script enforces it, the admin page shows totals only (no names or individual readings).
 
-Keep `index.html`, `admin.html` and `logo.png` in the same folder. Current version: 1.1.0 (shown top-right on every page).
+Style: minimal Shell-style interface (Jost font, EN / ID / MS). Version sits top right above the language toggle.
+
+Keep `index.html`, `admin.html` and `logo.png` in the same folder. Current version: 1.2.0 (shown top-right on every page).
